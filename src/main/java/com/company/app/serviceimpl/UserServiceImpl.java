@@ -3,6 +3,7 @@ package com.company.app.serviceimpl;
 import com.company.app.dao.UserDao;
 import com.company.app.daoimpl.UserDaoImpl;
 import com.company.app.entity.User;
+import com.company.app.exception.WrongCredentialException;
 import com.company.app.service.UserService;
 
 public class UserServiceImpl implements UserService {
@@ -15,7 +16,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User login(String username, String password) {
+	public User login(String username, String password) throws WrongCredentialException {
 		return DAO.login(username, password);
 	}
 

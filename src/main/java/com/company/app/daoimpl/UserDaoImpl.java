@@ -7,6 +7,7 @@ import org.hibernate.query.Query;
 import com.company.app.configuration.HibernateConfiguration;
 import com.company.app.dao.UserDao;
 import com.company.app.entity.User;
+import com.company.app.exception.WrongCredentialException;
 
 public class UserDaoImpl implements UserDao {
 
@@ -18,13 +19,13 @@ public class UserDaoImpl implements UserDao {
 		String result = (String) session.save(user);
 		transaction.commit();
 		session.close();
-		System.out.println("----- Result is: " + result + " -----");
+		System.out.println("----- Registration result is: " + result + " -----");
 
-		return "Something";
+		return result + ", your registration is successful";
 	}
 
 	@Override
-	public User login(String username, String password) {
+	public User login(String username, String password) throws WrongCredentialException {
 		try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
 			User user = null;
 			String HQL = "from User u where u.username=:uname and u.password=:passw";
@@ -33,6 +34,9 @@ public class UserDaoImpl implements UserDao {
 			query.setParameter("passw", password);
 			query.setMaxResults(1);
 			user = (User) query.uniqueResult();
+
+			if (user == null)
+				throw new WrongCredentialException("Wrong Username or Password");
 			return user;
 		}
 	}
