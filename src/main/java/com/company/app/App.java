@@ -1,5 +1,6 @@
 package com.company.app;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,11 +33,14 @@ public class App {
 	private static void createCourse(User user) {
 		try {
 			Course course = new Course();
+			List<Course> courses = new ArrayList<>();
 
 			course.setTitle(JOptionPane.showInputDialog("Enter your course name", "Type Here"));
 			course.setPrice(Long.parseLong(JOptionPane.showInputDialog("Enter your course price", "Type Here")));
 			course.setPublished(false);
 			course.setUser(user);
+			courses.add(course);
+			user.setCourses(courses);
 
 			String msg = COURSE_SERVICE.createCourse(course);
 			JOptionPane.showMessageDialog(null, msg);
