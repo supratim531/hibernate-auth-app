@@ -1,17 +1,51 @@
 package com.company.app.daoimpl;
 
+import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.company.app.configuration.HibernateConfiguration;
 import com.company.app.dao.CourseDao;
 import com.company.app.entity.Course;
+import com.company.app.exception.CourseNotFoundException;
+import com.company.app.exception.NoCourseFoundException;
 
 public class CourseDaoImpl implements CourseDao {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CourseDaoImpl.class);
+
+	private Course getCourseById(Long courseId) throws CourseNotFoundException {
+		try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
+			Course course = null;
+			String HQL = "from Course c where c.courseId=:id";
+			Query<?> query = session.createQuery(HQL);
+			query.setParameter("id", courseId);
+			query.setMaxResults(1);
+			course = (Course) query.uniqueResult();
+
+			if (course == null)
+				throw new CourseNotFoundException("No Course found with id: " + courseId);
+			return course;
+		}
+	}
+
+	@Override
+	public List<Course> getAllCourses() throws NoCourseFoundException {
+		try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
+			List<Course> courses = null;
+			String HQL = "from Course";
+			Query<?> query = session.createQuery(HQL);
+			courses = (List<Course>) query.list();
+
+			if (courses.size() <= 0)
+				throw new NoCourseFoundException("No course exists");
+			return courses;
+		}
+	}
 
 	@Override
 	public String createCourse(Course course) {
@@ -22,9 +56,23 @@ public class CourseDaoImpl implements CourseDao {
 		Long result = (Long) session.save(course);
 		transaction.commit();
 		session.close();
-		System.out.println("----- Create-Course result is: " + result + " -----");
+		LOG.info("----- Create-Course result is: " + result + " -----");
 
-		return "Something";
+		return "Course " + course.getTitle() + " added successfully";
+	}
+
+	@Override
+	public String deleteCourse(Long courseId) throws CourseNotFoundException {
+		try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
+			this.getCourseById(courseId);
+			Transaction transaction = session.beginTransaction();
+			String HQL = "delete from Course c where c.courseId=:id";
+			Query<?> query = session.createQuery(HQL);
+			query.setParameter("id", courseId);
+			query.executeUpdate();
+			transaction.commit();
+			return "Course with id " + courseId + " deleted successfully";
+		}
 	}
 
 }
