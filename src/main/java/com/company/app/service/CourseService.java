@@ -14,4 +14,6 @@ public interface CourseService {
 
 	public String deleteCourse(Long courseId) throws CourseNotFoundException;
 
+	public List<Course> getCourseByPriceRange(Long low, Long high) throws NoCourseFoundException;
+
 }

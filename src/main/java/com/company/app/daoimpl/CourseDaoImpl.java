@@ -14,11 +14,12 @@ import com.company.app.entity.Course;
 import com.company.app.exception.CourseNotFoundException;
 import com.company.app.exception.NoCourseFoundException;
 
+@SuppressWarnings("unchecked")
 public class CourseDaoImpl implements CourseDao {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CourseDaoImpl.class);
 
-	private Course getCourseById(Long courseId) throws CourseNotFoundException {
+	public Course getCourseById(Long courseId) throws CourseNotFoundException {
 		try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
 			Course course = null;
 			String HQL = "from Course c where c.courseId=:id";
@@ -64,14 +65,31 @@ public class CourseDaoImpl implements CourseDao {
 	@Override
 	public String deleteCourse(Long courseId) throws CourseNotFoundException {
 		try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
-			this.getCourseById(courseId);
+			Course course = this.getCourseById(courseId);
 			Transaction transaction = session.beginTransaction();
 			String HQL = "delete from Course c where c.courseId=:id";
 			Query<?> query = session.createQuery(HQL);
 			query.setParameter("id", courseId);
 			query.executeUpdate();
 			transaction.commit();
-			return "Course with id " + courseId + " deleted successfully";
+			LOG.info("Course (" + course.getTitle() + ") with id " + courseId + " deleted successfully");
+			return "Course (" + course.getTitle() + ") with id " + courseId + " deleted successfully";
+		}
+	}
+
+	@Override
+	public List<Course> getCourseByPriceRange(Long low, Long high) throws NoCourseFoundException {
+		try (Session session = HibernateConfiguration.getSessionFactory().openSession()) {
+			List<Course> courses = null;
+			String HQL = "from Course c where c.price between :low and :high";
+			Query<?> query = session.createQuery(HQL);
+			query.setParameter("low", low);
+			query.setParameter("high", high);
+			courses = (List<Course>) query.list();
+
+			if (courses.size() <= 0)
+				throw new NoCourseFoundException("No course exists in price range " + low + " to " + high);
+			return courses;
 		}
 	}
 

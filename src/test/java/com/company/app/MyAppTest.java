@@ -9,16 +9,13 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import com.company.app.entity.User;
 import com.company.app.exception.WrongCredentialException;
-import com.company.app.service.CourseService;
 import com.company.app.service.UserService;
-import com.company.app.serviceimpl.CourseServiceImpl;
 import com.company.app.serviceimpl.UserServiceImpl;
 
 @TestMethodOrder(OrderAnnotation.class)
 class MyAppTest {
 
 	private static final UserService USER_SERVICE = new UserServiceImpl();
-	private static final CourseService COURSE_SERVICE = new CourseServiceImpl();
 
 	@Test
 	@Order(1)

@@ -23,7 +23,7 @@ public class UserDaoImpl implements UserDao {
 		String result = (String) session.save(user);
 		transaction.commit();
 		session.close();
-		System.out.println("----- Registration result is: " + result + " -----");
+		LOG.info("----- Registration result is: " + result + " -----");
 
 		return result + ", your registration is successful";
 	}
