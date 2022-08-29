@@ -3,6 +3,8 @@ package com.company.app.daoimpl;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.company.app.configuration.HibernateConfiguration;
 import com.company.app.dao.UserDao;
@@ -10,6 +12,8 @@ import com.company.app.entity.User;
 import com.company.app.exception.WrongCredentialException;
 
 public class UserDaoImpl implements UserDao {
+
+	private static final Logger LOG = LoggerFactory.getLogger(UserDaoImpl.class);
 
 	@Override
 	public String register(User user) {
