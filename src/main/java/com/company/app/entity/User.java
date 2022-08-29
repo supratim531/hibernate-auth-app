@@ -32,8 +32,7 @@ public class User {
 	@Column(name = "email_address")
 	private String emailAddress;
 
-//	@OneToMany(mappedBy = "user", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH,
-//			CascadeType.REFRESH })
-//	private List<Course> courses;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+	private List<Course> courses;
 
 }

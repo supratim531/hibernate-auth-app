@@ -8,6 +8,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
 import org.hibernate.service.ServiceRegistry;
 
+import com.company.app.entity.Course;
 import com.company.app.entity.User;
 
 public class HibernateConfiguration {
@@ -22,7 +23,6 @@ public class HibernateConfiguration {
 			properties.put(Environment.USER, "sa");
 			properties.put(Environment.PASS, "sa");
 			properties.put(Environment.DRIVER, "org.h2.Driver");
-//			properties.put(Environment.URL, "jdbc:h2:mem:supratim");
 			properties.put(Environment.URL, "jdbc:h2:file:E:/STS-APR/CG-DB/H2/supratim");
 			properties.put(Environment.SHOW_SQL, "true");
 			properties.put(Environment.HBM2DDL_AUTO, "update");
@@ -31,6 +31,7 @@ public class HibernateConfiguration {
 
 			configuration.setProperties(properties);
 			configuration.addAnnotatedClass(User.class);
+			configuration.addAnnotatedClass(Course.class);
 			ServiceRegistry serviceRegistry = new StandardServiceRegistryBuilder()
 					.applySettings(configuration.getProperties()).build();
 

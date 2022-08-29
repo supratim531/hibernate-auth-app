@@ -93,7 +93,7 @@ public class App {
 		User user = User.builder().username("a").password("a").emailAddress("a@email").build();
 		USER_SERVICE.register(user);
 
-		Course course = Course.builder().courseId(12L).title("JAVA").price(1200L).published(false).build();
+		Course course = Course.builder().courseId(12L).title("JAVA").price(1200L).published(false).user(user).build();
 		COURSE_SERVICE.createCourse(course);
 	}
 
